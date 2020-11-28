@@ -18,6 +18,7 @@ from utils.train_utils import get_dir_name, format_metrics
 
 
 def train(args):
+    #preparation and configuration 
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     if int(args.double_precision):
@@ -65,7 +66,7 @@ def train(args):
         args.lr_reduce_freq = args.epochs
 
     # Model and optimizer
-    model = Model(args)
+    model = Model(args)# LPModel / NCModel
     logging.info(str(model))
     optimizer = getattr(optimizers, args.optimizer)(params=model.parameters(), lr=args.lr,
                                                     weight_decay=args.weight_decay)
@@ -90,7 +91,7 @@ def train(args):
     best_emb = None
     for epoch in range(args.epochs):
         t = time.time()
-        model.train()
+        model.train() # NCModel / LPmodel
         optimizer.zero_grad()
         embeddings = model.encode(data['features'], data['adj_train_norm'])
         train_metrics = model.compute_metrics(embeddings, data, 'train')
