@@ -19,7 +19,7 @@ def get_dim_act_curv(args):
     if not args.act:
         act = lambda x: x
     else:
-        act = getattr(F, args.act)
+        act = getattr(F, args.act)# nn.functional.relu() output(tensor-formatted)=RELU(input)
     acts = [act] * (args.num_layers - 1)
     dims = [args.feat_dim] + ([args.dim] * (args.num_layers - 1))
     if args.task in ['lp', 'rec']:
