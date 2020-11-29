@@ -20,18 +20,19 @@ def get_dim_act_curv(args):
         act = lambda x: x
     else:
         act = getattr(F, args.act)#nn.Sequential.relu即为RELU函数
-    acts = [act] * (args.num_layers - 1)#acts=relu
+    acts = [act] * (args.num_layers - 1)#acts=relu*(2-1)=relu
     dims = [args.feat_dim] + ([args.dim] * (args.num_layers - 1))#[args.feat_dim]表示将数字装在list里
-    #dims是[775,16],dim为16,num_layers为2
+    #dims是[775,16],feat_dim为775,dim为16,num_layers为2
     if args.task in ['lp', 'rec']:
         dims += [args.dim]#[775,16,16]
-        acts += [act]
-        n_curvatures = args.num_layers
+        acts += [act]# acts=relu-relu
+        n_curvatures = args.num_layers#2
     else:
         n_curvatures = args.num_layers - 1
     if args.c is None:
         # create list of trainable curvature parameters
         curvatures = [nn.Parameter(torch.Tensor([1.])) for _ in range(n_curvatures)]
+        # (tensor([1.], requires_grad=True)(tensor([1.], requires_grad=True)
     else:
         # fixed curvature
         curvatures = [torch.tensor([args.c]) for _ in range(n_curvatures)]
