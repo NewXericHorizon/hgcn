@@ -19,8 +19,8 @@ def get_dim_act_curv(args):
     if not args.act:
         act = lambda x: x
     else:
-        act = getattr(F, args.act)
-    acts = [act] * (args.num_layers - 1)#acts是一个relu函数
+        act = getattr(F, args.act)#nn.Sequential.relu即为RELU函数
+    acts = [act] * (args.num_layers - 1)#acts=relu
     dims = [args.feat_dim] + ([args.dim] * (args.num_layers - 1))#[args.feat_dim]表示将数字装在list里
     #dims是[775,16],dim为16,num_layers为2
     if args.task in ['lp', 'rec']:
