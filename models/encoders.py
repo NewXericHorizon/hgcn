@@ -100,17 +100,19 @@ class HGCN(Encoder):
         self.manifold = getattr(manifolds, args.manifold)()
         assert args.num_layers > 1
         dims, acts, self.curvatures = hyp_layers.get_dim_act_curv(args)
-        self.curvatures.append(self.c)
+        #[775,16,16],2层RELU,3个tensor[1.0]
+        self.curvatures.append(self.c)#c=None
         hgc_layers = []
-        for i in range(len(dims) - 1):
-            c_in, c_out = self.curvatures[i], self.curvatures[i + 1]
-            in_dim, out_dim = dims[i], dims[i + 1]
+        for i in range(len(dims) - 1):#len(dims)为3,for i in range(2)->2次循环
+            c_in, c_out = self.curvatures[i], self.curvatures[i + 1]#1,1;1,1
+            in_dim, out_dim = dims[i], dims[i + 1]#First in_dim=775,out_dim=16;Second in_dim=16,out_dim=16
             act = acts[i]
             hgc_layers.append(
                     hyp_layers.HyperbolicGraphConvolution(
-                            self.manifold, in_dim, out_dim, c_in, c_out, args.dropout, act, args.bias, args.use_att, args.local_agg
+                        self.manifold=Poincareball, in_dim, out_dim, c_in, c_out, \
+                        args.dropout=0.0, act=relu, args.bias=1, args.use_att=0, args.local_agg=0
                     )
-            )
+            )#包含2层神经网络
         self.layers = nn.Sequential(*hgc_layers)
         self.encode_graph = True
 
