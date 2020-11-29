@@ -62,10 +62,10 @@ class Hyperboloid(Manifold):
         return vals + mask * u
 
     def proj_tan0(self, u, c):
-        narrowed = u.narrow(-1, 0, 1)
-        vals = torch.zeros_like(u)
-        vals[:, 0:1] = narrowed
-        return u - vals
+        narrowed = u.narrow(-1, 0, 1)# 表示抽取出u的-1维（最高维），从第0列往后数1列的这一列（即第0列）
+        vals = torch.zeros_like(u)# 表示以u的行数和列数构造一个全0矩阵
+        vals[:, 0:1] = narrowed# 表示vals的第0列用narrowed代替，第1列以后全是0
+        return u - vals # 除了被选中的最高维第0列变为全0列以外，其他列数值不变
 
     def expmap(self, u, x, c):
         K = 1. / c
